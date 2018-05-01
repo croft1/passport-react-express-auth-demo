@@ -3,31 +3,26 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
 var passport = require('passport');
 var Strategy = require('passport-github').Strategy;
 
-
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
-
-
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
 
 passport.use(new Strategy({
         // clientID: process.env.CLIENT_ID,
@@ -39,7 +34,6 @@ passport.use(new Strategy({
     function(accessToken, refreshToken, profile, cb) {
         return cb(null, profile);
     }));
-
 
 passport.serializeUser(function(user, cb) {
     cb(null, user);
@@ -54,11 +48,11 @@ passport.deserializeUser(function(obj, cb) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 // Define routes.
 app.get('/',
     function(req, res) {
         res.render('home', { user: req.user });
+
     });
 
 app.get('/login',
@@ -74,7 +68,6 @@ app.get('/login/github/return',
     function(req, res) {
         res.redirect('/');
     });
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
