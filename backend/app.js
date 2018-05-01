@@ -69,17 +69,17 @@ app.get('/login',
         res.render('login');
     });
 
-app.get('/login/github', cors(),
+app.get('/login/github',
     passport.authenticate('github'));
 
-app.get('/login/github/return', cors(),
+app.get('/login/github/return',
     passport.authenticate('github', { failureRedirect: '/login' }),
     function(req, res) {
     logger("Request");
     logger(req);
     logger("Response");
     logger(res);
-        res.redirect('/');
+        res.redirect();
     });
 
 // catch 404 and forward to error handler
