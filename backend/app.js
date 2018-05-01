@@ -12,6 +12,16 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 // view engine setup
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Origin", "http://localhost:3333");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Headers", "Origin,Content-Type, Authorization, x-id, Content-Length, X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    next();
+});
+
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(logger('dev'));
@@ -19,7 +29,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -60,12 +69,16 @@ app.get('/login',
         res.render('login');
     });
 
-app.get('/login/github',
+app.get('/login/github', cors(),
     passport.authenticate('github'));
 
-app.get('/login/github/return',
+app.get('/login/github/return', cors(),
     passport.authenticate('github', { failureRedirect: '/login' }),
     function(req, res) {
+    logger("Request");
+    logger(req);
+    logger("Response");
+    logger(res);
         res.redirect('/');
     });
 
